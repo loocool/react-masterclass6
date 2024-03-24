@@ -10,6 +10,11 @@ export interface IMovie {
   title?: string;
   name?: string;
   overview: string;
+  release_date?: string;
+  first_air_date?: string;
+  last_air_date?: string;
+  genres: { id: number; name: string }[];
+  runtime?: number;
 }
 
 export interface IGetMoviesResult {
@@ -48,19 +53,21 @@ function getUpcoming() {
 }
 
 export function useMoviesQuery() {
-  const nowPlaying = useQuery<IGetMoviesResult>(["movie", "nowPlaying"], getNowPlaying);
+  const nowPlaying = useQuery<IGetMoviesResult>(
+    ["movie", "nowPlaying"],
+    getNowPlaying
+  );
   const popular = useQuery<IGetMoviesResult>(["movie", "popular"], getPopular);
-  const topRated = useQuery<IGetMoviesResult>(["movie", "topRated"], getTopRated);
-  const upcoming = useQuery<IGetMoviesResult>(["movie", "upcoming"], getUpcoming);
+  const topRated = useQuery<IGetMoviesResult>(
+    ["movie", "topRated"],
+    getTopRated
+  );
+  const upcoming = useQuery<IGetMoviesResult>(
+    ["movie", "upcoming"],
+    getUpcoming
+  );
   return [nowPlaying, popular, topRated, upcoming];
 }
-
-export function getMovie(movieId: string) {
-  return fetch(`${BASE_PATH}/movie/${movieId}?api_key=${API_KEY}`).then(
-    (response) => response.json()
-  );
-}
-
 
 function getTvAiringToday() {
   return fetch(`${BASE_PATH}/tv/airing_today?api_key=${API_KEY}`).then(
@@ -75,8 +82,8 @@ function getTvOnTheAir() {
 }
 
 function getTvPopular() {
-  return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}`).then(
-    (response) => response.json()
+  return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}`).then((response) =>
+    response.json()
   );
 }
 
@@ -87,27 +94,46 @@ function getTvTopRated() {
 }
 
 export function useTvQuery() {
-  const tvAiringToday = useQuery<IGetMoviesResult>(["tv", "airingToday"], getTvAiringToday);
-  const tvOnTheAir = useQuery<IGetMoviesResult>(["tv", "onTheAir"], getTvOnTheAir);
+  const tvAiringToday = useQuery<IGetMoviesResult>(
+    ["tv", "airingToday"],
+    getTvAiringToday
+  );
+  const tvOnTheAir = useQuery<IGetMoviesResult>(
+    ["tv", "onTheAir"],
+    getTvOnTheAir
+  );
   const tvPopular = useQuery<IGetMoviesResult>(["tv", "popular"], getTvPopular);
-  const tvTopRated = useQuery<IGetMoviesResult>(["tv", "topRated"], getTvTopRated);
+  const tvTopRated = useQuery<IGetMoviesResult>(
+    ["tv", "topRated"],
+    getTvTopRated
+  );
   return [tvAiringToday, tvOnTheAir, tvPopular, tvTopRated];
 }
 
 function searchMovie(keyword: string) {
-  return fetch(`${BASE_PATH}/search/movie?api_key=${API_KEY}&query=${keyword}`).then(
-    (response) => response.json()
-  );
+  return fetch(
+    `${BASE_PATH}/search/movie?api_key=${API_KEY}&query=${keyword}`
+  ).then((response) => response.json());
 }
 
-function searchTv(keyword: string) {
-  return fetch(`${BASE_PATH}/search/tv?api_key=${API_KEY}&query=${keyword}`).then(
-    (response) => response.json()
-  );
+export function searchTv(keyword: string) {
+  return fetch(
+    `${BASE_PATH}/search/tv?api_key=${API_KEY}&query=${keyword}`
+  ).then((response) => response.json());
 }
 
 export function useSearchQuery(keyword: string) {
-  const movie = useQuery<IGetMoviesResult>(["searchMovie", keyword], () => searchMovie(keyword));
-  const tv = useQuery<IGetMoviesResult>(["searchTv", keyword], () => searchTv(keyword));
+  const movie = useQuery<IGetMoviesResult>(["searchMovie", keyword], () =>
+    searchMovie(keyword)
+  );
+  const tv = useQuery<IGetMoviesResult>(["searchTv", keyword], () =>
+    searchTv(keyword)
+  );
   return [movie, tv];
+}
+
+export function getDetail(type: string, id: string) {
+  return fetch(`${BASE_PATH}/${type}/${id}?api_key=${API_KEY}`).then(
+    (response) => response.json()
+  );
 }

@@ -1,8 +1,9 @@
 import { motion, useViewportScroll } from "framer-motion";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import { IMovie } from "../api";
+import { IMovie, getDetail } from "../api";
 import { makeImagePath } from "../utils";
+import { useQuery } from "react-query";
 
 const Overlay = styled(motion.div)`
   position: fixed;
@@ -21,7 +22,7 @@ const BigMovie = styled(motion.div)`
   right: 0;
   margin: 0 auto;
   border-radius: 15px;
-  overflow: hidden;
+  overflow: auto;
   background-color: ${(props) => props.theme.black.lighter};
 `;
 
@@ -40,8 +41,13 @@ const BigTitle = styled.h3`
   bottom: calc(80vh - 400px);
 `;
 
-const BigOverview = styled.p`
+const BigSummary = styled.p`
   padding: 20px;
+  color: ${(props) => props.theme.white.lighter};
+`;
+
+const BigOverview = styled.p`
+  padding: 0 20px 20px;
   color: ${(props) => props.theme.white.lighter};
 `;
 
@@ -63,6 +69,10 @@ function Detail({ data }: { data: IMovie }) {
         ? `/search?keyword=${keyword}`
         : "/"
     );
+  const { data: detail, isLoading } = useQuery<IMovie>(
+    [data.title ? "movie" : "tv", "detail", data.id],
+    () => getDetail(data.title ? "movie" : "tv", data.id + "")
+  );
   return (
     <>
       <Overlay
@@ -85,6 +95,12 @@ function Detail({ data }: { data: IMovie }) {
               }}
             />
             <BigTitle>{data.title ?? data.name}</BigTitle>
+            <BigSummary>
+              {detail?.release_date ??
+                `${detail?.first_air_date} ~ ${detail?.last_air_date}`}{" "}
+              ‧ {detail?.genres.map((genre) => genre.name).join("/") || "-"}
+              {detail?.runtime ? ` ‧ ${detail.runtime}min` : ""}
+            </BigSummary>
             <BigOverview>{data.overview}</BigOverview>
           </>
         )}
