@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { IGetMoviesResult } from "../api";
 import { makeImagePath } from "../utils";
@@ -129,9 +129,9 @@ function Slider({ list, data }: { list: string; data?: IGetMoviesResult }) {
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const [forward, setForward] = useState(true);
-  const tvMatch = useRouteMatch(
-    "/tv"
-  );
+  const pageMatch = useRouteMatch<{ page: string }>("/:page");
+  const location = useLocation();
+  const keyword = new URLSearchParams(location.search).get("keyword");
   const changeIndex = (step: number) => {
     if (data) {
       if (leaving) return;
@@ -149,7 +149,10 @@ function Slider({ list, data }: { list: string; data?: IGetMoviesResult }) {
   };
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
-    history.push(`/${tvMatch ? "tv" : "movies"}/${list}/${movieId}`);
+    history.push(
+      `/${pageMatch?.params.page ?? "movies"}/${list}/${movieId}` +
+        (keyword && `?keyword=${keyword}`)
+    );
   };
   return (
     <>

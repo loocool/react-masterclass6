@@ -93,3 +93,21 @@ export function useTvQuery() {
   const tvTopRated = useQuery<IGetMoviesResult>(["tv", "topRated"], getTvTopRated);
   return [tvAiringToday, tvOnTheAir, tvPopular, tvTopRated];
 }
+
+function searchMovie(keyword: string) {
+  return fetch(`${BASE_PATH}/search/movie?api_key=${API_KEY}&query=${keyword}`).then(
+    (response) => response.json()
+  );
+}
+
+function searchTv(keyword: string) {
+  return fetch(`${BASE_PATH}/search/tv?api_key=${API_KEY}&query=${keyword}`).then(
+    (response) => response.json()
+  );
+}
+
+export function useSearchQuery(keyword: string) {
+  const movie = useQuery<IGetMoviesResult>(["searchMovie", keyword], () => searchMovie(keyword));
+  const tv = useQuery<IGetMoviesResult>(["searchTv", keyword], () => searchTv(keyword));
+  return [movie, tv];
+}
