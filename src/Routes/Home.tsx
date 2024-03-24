@@ -70,14 +70,12 @@ const BigTitle = styled.h3`
   color: ${(props) => props.theme.white.lighter};
   padding: 20px;
   font-size: 46px;
-  position: relative;
-  top: -80px;
+  position: absolute;
+  bottom: calc(80vh - 400px);
 `;
 
 const BigOverview = styled.p`
   padding: 20px;
-  position: relative;
-  top: -80px;
   color: ${(props) => props.theme.white.lighter};
 `;
 
