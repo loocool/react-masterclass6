@@ -146,7 +146,7 @@ function Slider({ list, data }: { list: string; data?: IGetMoviesResult }) {
   };
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
-    history.push(`/movies/${list}/${movieId}`);
+    history.push(`/tv/${list}/${movieId}`);
   };
   return (
     <>
@@ -169,7 +169,7 @@ function Slider({ list, data }: { list: string; data?: IGetMoviesResult }) {
             key={index}
           >
             {data?.results
-              .slice(list === "now-playing" ? 1 : 0)
+              .slice(list === "now-playing" || list === "airing-today" ? 1 : 0)
               .slice(offset * index, offset * index + offset)
               .map((movie) => (
                 <Box
@@ -183,7 +183,7 @@ function Slider({ list, data }: { list: string; data?: IGetMoviesResult }) {
                   bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
                 >
                   <Info variants={infoVariants}>
-                    <h4>{movie.title}</h4>
+                    <h4>{movie.title ?? movie.name}</h4>
                   </Info>
                 </Box>
               ))}
