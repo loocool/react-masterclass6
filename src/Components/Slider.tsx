@@ -151,7 +151,7 @@ function Slider({ list, data }: { list: string; data?: IGetMoviesResult }) {
   const onBoxClicked = (movieId: number) => {
     history.push(
       `/${pageMatch?.params.page ?? "movies"}/${list}/${movieId}` +
-        (keyword && `?keyword=${keyword}`)
+        (keyword ? `?keyword=${keyword}` : "")
     );
   };
   return (
